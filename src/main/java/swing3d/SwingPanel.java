@@ -29,7 +29,7 @@ public class SwingPanel extends JPanel implements ActionListener {
 
     private Color color = Color.red;
     private List<Polygon3D> poly = new ArrayList<>();
-    private int NUM_POLYGON = 10;
+    private int NUM_POLYGON = 1;
     private List<Matrix4X4> spinner = new ArrayList<>();
 
     public SwingPanel() {
@@ -38,23 +38,23 @@ public class SwingPanel extends JPanel implements ActionListener {
 
         //create a spinner matrix
         Matrix4X4 a = new Matrix4X4();
-        a.rotationX(0);
+        a.rotationX(0.0);
         Matrix4X4 b = new Matrix4X4();
-        b.rotationY(0);
+        b.rotationY(0.0);
         Matrix4X4 c = new Matrix4X4();
-        c.rotationZ(0);
+        c.rotationZ(0.0);
         
         for (int i = 0; i < NUM_POLYGON; i++) {
-            this.poly.add(new Polygon3D(6, 0.6));
+            this.poly.add(new Polygon3D(5, 0.4, 0.6));
             this.spinner.add(a.multiply(b).multiply(c));
         }//for
 
-        Matrix4X4 translate = new Matrix4X4();
-        translate.set(1, 3, 0.3);
-        for (int i = 0; i < NUM_POLYGON; i++) {
-            translate.set(1, 3, translate.get(1, 3) - 0.05);
-            this.poly.get(i).transform(translate);
-        }//for
+//        Matrix4X4 translate = new Matrix4X4();
+//        translate.set(1, 3, 0);
+//        for (int i = 0; i < NUM_POLYGON; i++) {
+//            translate.set(1, 3, translate.get(1, 3));
+//            this.poly.get(i).transform(translate);
+//        }//for
     } // SwingPanel()
 
     public Color getColour() {
