@@ -8,13 +8,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.GeneralPath;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
 public class SwingPanel extends JPanel implements ActionListener {
-// a SwingPanel is a kind of JPanel
-// and
-// a SwingPanel is a kind of ActionListener
 
     private final int points = 8;
     private double centerX = 0.0;
@@ -29,30 +28,33 @@ public class SwingPanel extends JPanel implements ActionListener {
     private Shape shape;
 
     private Color color = Color.red;
-    private Polygon3D poly;
-    private Matrix4X4 spinner;
+    private List<Polygon3D> poly = new ArrayList<>();
+    private int NUM_POLYGON = 10;
+    private List<Matrix4X4> spinner = new ArrayList<>();
 
     public SwingPanel() {
         Timer timer = new Timer(20, this);
         timer.start();
 
-//        int p = this.points;
-//        double x = this.centerX;
-//        double y = this.centerY;
-//        double r0 = this.minorRadius;
-//        double r1 = this.majorRadius;
-//        this.shape = makeStar(p, x, y, r0, r1);
-        this.poly = new Polygon3D(5, 0.6);
+        //create a spinner matrix
         Matrix4X4 a = new Matrix4X4();
-        a.rotationX(Math.PI / 112);
-
+        a.rotationX(0);
         Matrix4X4 b = new Matrix4X4();
-        b.rotationY(Math.PI / 144);
-
+        b.rotationY(0);
         Matrix4X4 c = new Matrix4X4();
         c.rotationZ(0);
+        
+        for (int i = 0; i < NUM_POLYGON; i++) {
+            this.poly.add(new Polygon3D(6, 0.6));
+            this.spinner.add(a.multiply(b).multiply(c));
+        }//for
 
-        this.spinner = a.multiply(b).multiply(c);
+        Matrix4X4 translate = new Matrix4X4();
+        translate.set(1, 3, 0.3);
+        for (int i = 0; i < NUM_POLYGON; i++) {
+            translate.set(1, 3, translate.get(1, 3) - 0.05);
+            this.poly.get(i).transform(translate);
+        }//for
     } // SwingPanel()
 
     public Color getColour() {
@@ -88,46 +90,22 @@ public class SwingPanel extends JPanel implements ActionListener {
         transform.concatenate(translation);
         transform.concatenate(rotation);
 
-        this.shape = poly.getShape();
+        List<Shape> s = new ArrayList<>();
 
-        Shape s = transform.createTransformedShape(this.shape);
-
-        g2D.setColor(this.getColour());
-        g2D.fill(s);
+        for (int i = 0; i < NUM_POLYGON; i++) {
+            this.shape = poly.get(i).getShape();
+            s.add(transform.createTransformedShape(this.shape));
+            g2D.setColor(this.getColour());
+            g2D.fill(s.get(i));
+        }
     } // paintComponent( Graphics )
-
-    private Shape makeStar(int points,
-            double centerX, double centerY,
-            double minorRadius, double majorRadius) {
-
-        GeneralPath star = new GeneralPath();
-
-        double x = centerX + majorRadius * Math.cos(0.0);
-        double y = centerY + majorRadius * Math.sin(0.0);
-        star.moveTo(x, y);
-        for (int i = 1; i < 2 * points; i++) {
-            double fraction = ((double) i) / (2 * points);
-            double angle = 2.0 * Math.PI * fraction;
-
-            if (i % 2 == 0) {
-                x = centerX + majorRadius * Math.cos(angle);
-                y = centerY + majorRadius * Math.sin(angle);
-            } // if
-            else {
-                x = centerX + minorRadius * Math.cos(angle);
-                y = centerY + minorRadius * Math.sin(angle);
-            } // else
-            star.lineTo(x, y);
-        } // for
-        star.closePath();
-
-        return star;
-    } // makeStar()
 
     @Override
     public void actionPerformed(ActionEvent event) {
-        
-        this.poly.transform(spinner);
+
+        for (int i = 0; i < NUM_POLYGON; i++) {
+            this.poly.get(i).transform(spinner.get(i));
+        }//for
         this.repaint();
     } // actionPerformed( ActionEvent )
 
