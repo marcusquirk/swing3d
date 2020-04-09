@@ -17,7 +17,7 @@ public class Polygon3D {
                 double angle = fraction * 2.0 * Math.PI;
                 double x = radius * Math.cos(angle);
                 double y = radius * Math.sin(angle);
-                Vector v = new Vector(x, y - depth / 2 + (j * depth / layers), 0.0);
+                Vector v = new Vector(x, y, (j * depth) - (depth/2));
                 this.vertices.add(v);
             } // for
         }//for
@@ -79,7 +79,7 @@ public class Polygon3D {
         double y = v.get(1);
         path.moveTo(x, y);
 
-        for (int i = 0; i < size; i++) {
+        for (int i = 1; i < size; i++) {
             v = this.vertices.get(i);
             x = v.get(0);
             y = v.get(1);
@@ -93,7 +93,7 @@ public class Polygon3D {
         GeneralPath path = new GeneralPath();
         int size = this.vertices.size() / layers;
 
-        Vector v = this.vertices.get(firstSide+size);
+        Vector v = this.vertices.get(firstSide + size);
         double x = v.get(0);
         double y = v.get(1);
         path.moveTo(x, y);
@@ -102,13 +102,13 @@ public class Polygon3D {
         x = v.get(0);
         y = v.get(1);
         path.lineTo(x, y);
-        
-        v = this.vertices.get(firstSide+1);
+
+        v = this.vertices.get(firstSide + 1);
         x = v.get(0);
         y = v.get(1);
         path.lineTo(x, y);
-        
-        v = this.vertices.get(firstSide+size+1);
+
+        v = this.vertices.get(firstSide + size + 1);
         x = v.get(0);
         y = v.get(1);
         path.lineTo(x, y);
@@ -116,26 +116,26 @@ public class Polygon3D {
         path.closePath();
         return path;
     }
-    
+
     public Shape getShapeFinalSide() {
         GeneralPath path = new GeneralPath();
         int size = this.vertices.size() / layers;
 
-        Vector v = this.vertices.get(size-1);
+        Vector v = this.vertices.get(2*size - 1);
         double x = v.get(0);
         double y = v.get(1);
         path.moveTo(x, y);
 
-        v = this.vertices.get(4);
+        v = this.vertices.get(size-1);
         x = v.get(0);
         y = v.get(1);
         path.lineTo(x, y);
-        
+
         v = this.vertices.get(0);
         x = v.get(0);
         y = v.get(1);
         path.lineTo(x, y);
-        
+
         v = this.vertices.get(size);
         x = v.get(0);
         y = v.get(1);
@@ -144,5 +144,35 @@ public class Polygon3D {
         path.closePath();
         return path;
     }
+
+    public double getTopZ() {
+        int size = this.vertices.size() / layers;
+        Vector v = this.vertices.get(0);
+        double currentZ = v.get(2);
+
+        for (int i = 1; i < size; i++) {
+            v = this.vertices.get(i);
+            double z = v.get(2);
+            if (z > currentZ){
+                currentZ = z;
+            }
+        }
+        return currentZ;
+    }//getTop()
+    
+    public double getBottomZ() {
+        int size = this.vertices.size() / layers;
+        Vector v = this.vertices.get(size);
+        double currentZ = v.get(2);
+
+        for (int i = size; i < size*layers; i++) {
+            v = this.vertices.get(i);
+            double z = v.get(2);
+            if (z > currentZ){
+                currentZ = z;
+            }
+        }
+        return currentZ;
+    }//getTop()
 
 } // Polygon3D
