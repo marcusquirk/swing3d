@@ -30,7 +30,7 @@ public class SwingPanel extends JPanel implements ActionListener {
     private Color color = Color.red;
     private List<Polygon3D> poly = new ArrayList<>();
     private int NUM_POLYGON = 1;
-    private int NUM_SIDES = 7;
+    private int NUM_SIDES = 5;
     private List<Matrix4X4> spinner = new ArrayList<>();
 
     public SwingPanel() {
@@ -39,14 +39,14 @@ public class SwingPanel extends JPanel implements ActionListener {
 
         //create a spinner matrix
         Matrix4X4 a = new Matrix4X4();
-        a.rotationX(0.0);
+        a.rotationX(0.00);
         Matrix4X4 b = new Matrix4X4();
-        b.rotationY(0.04);
+        b.rotationY(0.01);
         Matrix4X4 c = new Matrix4X4();
-        c.rotationZ(0.05);
+        c.rotationZ(0.02);
 
         for (int i = 0; i < NUM_POLYGON; i++) {
-            this.poly.add(new Polygon3D(NUM_SIDES, 0.5, 0.8));
+            this.poly.add(new Polygon3D(NUM_SIDES, 0.3, 0.2));
             this.spinner.add(a.multiply(b).multiply(c));
         }//for
 
@@ -93,18 +93,22 @@ public class SwingPanel extends JPanel implements ActionListener {
 
         List<Shape> s = new ArrayList<>();
 
-        
-        this.shape = poly.get(0).getShapeBottom();
+        if (poly.get(0).getTopZ() < poly.get(0).getBottomZ()) {
+            this.shape = poly.get(0).getShapeBottom();
+        } 
+        else {
+            this.shape = poly.get(0).getShapeTop();
+        }
         s.add(transform.createTransformedShape(this.shape));
         g2D.setColor(this.getColour());
         g2D.fill(s.get(0));
-        
-        for (int i = 0; i < NUM_SIDES-1; i++) {
+
+        for (int i = 0; i < NUM_SIDES - 1; i++) {
             this.shape = poly.get(0).getShapeSide(i);
             s.add(transform.createTransformedShape(this.shape));
             g2D.setColor(new Color(this.getColour().getRed() + 30, this.getColour().getGreen(),
                     this.getColour().getBlue() - 30));
-            g2D.fill(s.get(i+1));
+            g2D.fill(s.get(i + 1));
         }//for
         this.shape = poly.get(0).getShapeFinalSide();
         s.add(transform.createTransformedShape(this.shape));
@@ -112,11 +116,15 @@ public class SwingPanel extends JPanel implements ActionListener {
                 this.getColour().getBlue() - 30));
         g2D.fill(s.get(NUM_SIDES));
 
-
-        this.shape = poly.get(0).getShapeTop();
+        if (poly.get(0).getTopZ() > poly.get(0).getBottomZ()) {
+            this.shape = poly.get(0).getShapeBottom();
+        } 
+        else {
+            this.shape = poly.get(0).getShapeTop();
+        }
         s.add(transform.createTransformedShape(this.shape));
         g2D.setColor(this.getColour());
-        g2D.fill(s.get(NUM_SIDES+1));
+        g2D.fill(s.get(NUM_SIDES + 1));
 
     } // paintComponent( Graphics )
 
