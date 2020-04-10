@@ -143,9 +143,9 @@ public class Polygon3D {
     public Vector getNormalSide(int firstSide) {
         int size = this.vertices.size() / layers;
         List<Vector> vectors = new ArrayList<>();
-        vectors.add(this.vertices.get(firstSide + size));
-        vectors.add(this.vertices.get(firstSide));        
         vectors.add(this.vertices.get(firstSide + 1));
+        vectors.add(this.vertices.get(firstSide));        
+        vectors.add(this.vertices.get(firstSide +size));
         vectors.add(vectors.get(0).subtract(vectors.get(1)));
         vectors.add(vectors.get(2).subtract(vectors.get(1)));
         vectors.add(vectors.get(3).cross(vectors.get(4)).normalise());
@@ -206,6 +206,23 @@ public class Polygon3D {
         }
         return currentZ;
     }//getTop()
+    
+    public int getTopTopVertex() {
+        int size = this.vertices.size() / layers;
+        Vector v = this.vertices.get(0);
+        double currentZ = v.get(2);
+        int currentVertex = 0;
+
+        for (int i = 1; i < size; i++) {
+            v = this.vertices.get(i);
+            double z = v.get(2);
+            if (z > currentZ) {
+                currentZ = z;
+                currentVertex = i;
+            }
+        }
+        return currentVertex;
+    }//getTopTopVertex()
 
     public double getBottomZ() {
         int size = this.vertices.size() / layers;
@@ -221,5 +238,22 @@ public class Polygon3D {
         }
         return currentZ;
     }//getTop()
+    
+    public int getBottomTopVertex() {
+        int size = this.vertices.size() / layers;
+        Vector v = this.vertices.get(size);
+        double currentZ = v.get(2);
+        int currentVertex = size;
+
+        for (int i = size; i < size*layers; i++) {
+            v = this.vertices.get(i);
+            double z = v.get(2);
+            if (z > currentZ) {
+                currentZ = z;
+                currentVertex = i;
+            }
+        }
+        return currentVertex-size;
+    }//getBottomTopVertex()
 
 } // Polygon3D
