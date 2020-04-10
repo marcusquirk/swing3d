@@ -13,28 +13,10 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 
-/**
- * A class JFrame that controls the JPanel SwingPanel, allowing the user to
- * change colours of a shape and its background, as well as changing the physics
- * acting on it such as the gravitational and damping constants. The user may also
- * choose between a circle and square and 'restart'its position and velocity. The
- * velocity is randomly generated when the shape is initialised and is re-
- * randomised at every restart.
- * 
- * I refactored the colour generation.
- * 
- * A potential improvement would be to refactor the creation of menus into a
- * method, but each menu is unique enough (number and kind of sub menus and names)
- * that I don't think such an effort is worth it yet. If I add more menus and a
- * pattern shows itself, I will reconsider.
- * 
- * @author marcus
- */
-
 public class Swing3d extends JFrame implements ActionListener {
 
-    private final int FRAME_WIDTH = 600;
-    private final int FRAME_HEIGHT = 600;
+    private final int FRAME_WIDTH = 300;
+    private final int FRAME_HEIGHT = 300;
     private final String FRAME_TITLE = "Swing";
     private final int NUMBER_OF_COLOURS = 5;
     private final List<Color> palette = new ArrayList<>();
