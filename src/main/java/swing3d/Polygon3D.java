@@ -17,7 +17,7 @@ public class Polygon3D {
                 double angle = fraction * 2.0 * Math.PI;
                 double x = radius * Math.cos(angle);
                 double y = radius * Math.sin(angle);
-                Vector v = new Vector(x, y, (j * depth) - (depth/2));
+                Vector v = new Vector(x, y, (j * depth) - (depth / 2));
                 this.vertices.add(v);
             } // for
         }//for
@@ -70,6 +70,18 @@ public class Polygon3D {
         return path;
     }
 
+    public Vector getNormalBottom() {
+        List<Vector> vectors = new ArrayList<>();
+        int size = this.vertices.size() / layers;
+        vectors.add(this.vertices.get(size));
+        vectors.add(this.vertices.get(size + 1));        
+        vectors.add(this.vertices.get(size + 2));
+        vectors.add(vectors.get(0).subtract(vectors.get(1)));
+        vectors.add(vectors.get(2).subtract(vectors.get(1)));
+        vectors.add(vectors.get(3).cross(vectors.get(4)).normalise());
+        return vectors.get(5);
+    }
+
     public Shape getShapeTop() {
         GeneralPath path = new GeneralPath();
         int size = this.vertices.size() / layers;
@@ -87,6 +99,17 @@ public class Polygon3D {
         }
         path.closePath();
         return path;
+    }
+    
+    public Vector getNormalTop() {
+        List<Vector> vectors = new ArrayList<>();
+        vectors.add(this.vertices.get(0));
+        vectors.add(this.vertices.get(1));        
+        vectors.add(this.vertices.get(2));
+        vectors.add(vectors.get(0).subtract(vectors.get(1)));
+        vectors.add(vectors.get(2).subtract(vectors.get(1)));
+        vectors.add(vectors.get(3).cross(vectors.get(4)).normalise());
+        return vectors.get(5);
     }
 
     public Shape getShapeSide(int firstSide) {
@@ -116,17 +139,29 @@ public class Polygon3D {
         path.closePath();
         return path;
     }
+    
+    public Vector getNormalSide(int firstSide) {
+        int size = this.vertices.size() / layers;
+        List<Vector> vectors = new ArrayList<>();
+        vectors.add(this.vertices.get(firstSide + size));
+        vectors.add(this.vertices.get(firstSide));        
+        vectors.add(this.vertices.get(firstSide + 1));
+        vectors.add(vectors.get(0).subtract(vectors.get(1)));
+        vectors.add(vectors.get(2).subtract(vectors.get(1)));
+        vectors.add(vectors.get(3).cross(vectors.get(4)).normalise());
+        return vectors.get(5);
+    }
 
     public Shape getShapeFinalSide() {
         GeneralPath path = new GeneralPath();
         int size = this.vertices.size() / layers;
 
-        Vector v = this.vertices.get(2*size - 1);
+        Vector v = this.vertices.get(2 * size - 1);
         double x = v.get(0);
         double y = v.get(1);
         path.moveTo(x, y);
 
-        v = this.vertices.get(size-1);
+        v = this.vertices.get(size - 1);
         x = v.get(0);
         y = v.get(1);
         path.lineTo(x, y);
@@ -144,6 +179,18 @@ public class Polygon3D {
         path.closePath();
         return path;
     }
+    
+    public Vector getNormalFinalSide() {
+        int size = this.vertices.size() / layers;
+        List<Vector> vectors = new ArrayList<>();
+        vectors.add(this.vertices.get(2 * size - 1));
+        vectors.add(this.vertices.get(size - 1));        
+        vectors.add(this.vertices.get(0));
+        vectors.add(vectors.get(0).subtract(vectors.get(1)));
+        vectors.add(vectors.get(2).subtract(vectors.get(1)));
+        vectors.add(vectors.get(3).cross(vectors.get(4)).normalise());
+        return vectors.get(5);
+    }
 
     public double getTopZ() {
         int size = this.vertices.size() / layers;
@@ -153,22 +200,22 @@ public class Polygon3D {
         for (int i = 1; i < size; i++) {
             v = this.vertices.get(i);
             double z = v.get(2);
-            if (z > currentZ){
+            if (z > currentZ) {
                 currentZ = z;
             }
         }
         return currentZ;
     }//getTop()
-    
+
     public double getBottomZ() {
         int size = this.vertices.size() / layers;
         Vector v = this.vertices.get(size);
         double currentZ = v.get(2);
 
-        for (int i = size; i < size*layers; i++) {
+        for (int i = size; i < size * layers; i++) {
             v = this.vertices.get(i);
             double z = v.get(2);
-            if (z > currentZ){
+            if (z > currentZ) {
                 currentZ = z;
             }
         }
