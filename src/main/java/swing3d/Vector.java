@@ -13,10 +13,10 @@ public class Vector {
 
     // The x component is called u0, the y component u1, the z component u2, and
     // the homogeneous component u3.
-    private final double u0;
-    private final double u1;
-    private final double u2;
-    private final double u3;
+    private double u0;
+    private double u1;
+    private double u2;
+    private double u3;
 
     /**
      * A constructor which accepts three parameters: the x, y, z components of the
@@ -72,6 +72,10 @@ public class Vector {
                 this.get(2) + v.get(2), this.get(3) + v.get(3));
     } // add( Vector2D )
 
+    public Vector subtract(Vector v) {
+        return new Vector(this.get(0) - v.get(0), this.get(1) - v.get(1),
+                this.get(2) - v.get(2), this.get(3));
+    } // add( Vector2D )
     
     /**
      * Returns a vector scaled in each direction with different factors .
@@ -218,5 +222,13 @@ public class Vector {
         Vector v3 = new Vector(3,2,7);
         System.out.println(v1.cross(v3));
     }
+    
+    
+    public void set(Vector v) {
+        this.u0 = v.get(0);
+        this.u1 = v.get(1);
+        this.u2 = v.get(2);
+        this.u3 = v.get(3);
+    } // get()
 
 } // Vector
